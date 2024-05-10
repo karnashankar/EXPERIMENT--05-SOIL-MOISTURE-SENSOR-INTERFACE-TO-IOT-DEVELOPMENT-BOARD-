@@ -100,29 +100,112 @@ GND is the ground pin.
 ```
 #include "main.h"
 #include "stdio.h"
+uint32_t adc_val;
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
 
-#if defined (__ICCARM__) || defined (__ARMCC_VERSION)
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+ADC_HandleTypeDef hadc;
+
+UART_HandleTypeDef huart2;
+
+/* USER CODE BEGIN PV */
+uint32_t adc_val;
+/* USER CODE END PV */
+
+/* Private function prototypes -----------------------------------------------*/
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_ADC_Init(void);
+static void MX_USART2_UART_Init(void);
+/* USER CODE BEGIN PFP */
+#if defined (_ICCARM) || defined (_ARMCC_VERSION)
 #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#elif defined(__GNUC__)
+#elif defined(_GNUC_)
+   /* With GCC, small printf (option LD Linker->Libraries->Small printf
+   set to 'Yes') calls __io_putchar() */
 #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#endif
+#endif /* _ICCARM_ || __ARMCC_VERSION */
+
 
 PUTCHAR_PROTOTYPE
 {
+  /* Place your implementation of fputc here */
+  /* e.g. write a character to the USART2 and Loop until the end of transmission */
   HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, 0xFFFF);
+
   return ch;
 }
+/* USER CODE END PFP */
 
-while (1)
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
+
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
+  /* USER CODE BEGIN 1 */
+
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_ADC_Init();
+  MX_USART2_UART_Init();
+  /* USER CODE BEGIN 2 */
+
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
   {
 	  HAL_ADC_Start(&hadc);
 	  		HAL_ADC_PollForConversion(&hadc,100);
 	  		adc_val = HAL_ADC_GetValue(&hadc);
-	  		uint32_t soilmoisture;
-	  		soilmoisture=adc_val/10.24;
 	  		HAL_ADC_Stop(&hadc);
 	  		HAL_Delay(500);
-	  		printf("soilmoisture=:%ld\n",soilmoisture);
+
+	  		uint32_t soilmoist;
+soilmoist=adc_val/10.24;
+	  		printf("soilmoisture :%ld\n",soilmoist);
 	  		if(adc_val<500)
 	  		{
 	  			 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);;
@@ -130,24 +213,19 @@ while (1)
 	  		if(adc_val>500)
 	  		{
 	  			 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);;
-	  		}
-  }
+	  		}
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+  }
+  /* USER CODE END 3 */
 }
 ```
 
-
 ## Output screen shots on serial monitor   :
- ![image](https://github.com/karnashankar/EXPERIMENT--05-SOIL-MOISTURE-SENSOR-INTERFACE-TO-IOT-DEVELOPMENT-BOARD-/assets/121109150/1de6e460-4989-40bf-8574-84a27fc010f7)
-
- ![image](https://github.com/karnashankar/EXPERIMENT--05-SOIL-MOISTURE-SENSOR-INTERFACE-TO-IOT-DEVELOPMENT-BOARD-/assets/121109150/00dd3ddb-1d3b-4847-942c-69b2f07751f9)
 
  ##CIRCUIT SETUP
-
- WITH SENSOR
- ![image](https://github.com/karnashankar/EXPERIMENT--05-SOIL-MOISTURE-SENSOR-INTERFACE-TO-IOT-DEVELOPMENT-BOARD-/assets/121109150/e869a6d8-9c6f-4bfe-9451-c0ab060a31d2)
-
-WITHOUT SENSOR:
-![image](https://github.com/karnashankar/EXPERIMENT--05-SOIL-MOISTURE-SENSOR-INTERFACE-TO-IOT-DEVELOPMENT-BOARD-/assets/121109150/6639f5e2-45ab-49c9-9ffc-81f686e2f0a2)
+![image](https://github.com/karnashankar/EXPERIMENT--05-SOIL-MOISTURE-SENSOR-INTERFACE-TO-IOT-DEVELOPMENT-BOARD-/assets/121109150/7c0d4042-b3fe-4d67-9d1c-36d734e5e36d)
 
  
  
